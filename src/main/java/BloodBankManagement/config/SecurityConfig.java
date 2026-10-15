@@ -1,3 +1,4 @@
+
 package BloodBankManagement.config;
 
 import org.springframework.context.annotation.Bean;
@@ -7,9 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.security.web.SecurityFilterChain;
 
 import org.springframework.web.cors.CorsConfiguration;
@@ -52,11 +51,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration =
-                new CorsConfiguration();
+        CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-                List.of("http://localhost:8082")
+                List.of(
+                        "http://localhost:8082",
+                        "https://bloodbank-frontend-gqyf.onrender.com"
+                )
         );
 
         configuration.setAllowedMethods(
@@ -69,19 +70,14 @@ public class SecurityConfig {
                 )
         );
 
-        configuration.setAllowedHeaders(
-                List.of("*")
-        );
+        configuration.setAllowedHeaders(List.of("*"));
 
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration(
-                "/**",
-                configuration
-        );
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
@@ -96,15 +92,15 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
 
                 .requestMatchers(
-                    "/api/users/register",
-                    "/api/users/login",
-                    "/api/inventory"
+                        "/api/users/register",
+                        "/api/users/login",
+                        "/api/inventory"
                 ).permitAll()
 
                 .requestMatchers(
-                    "/api/inventory/**",
-                    "/api/requests/*/approve",
-                    "/api/users"
+                        "/api/inventory/**",
+                        "/api/requests/*/approve",
+                        "/api/users"
                 ).hasRole("ADMIN")
 
                 .anyRequest().permitAll()
